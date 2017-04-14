@@ -1,36 +1,25 @@
 // ============================================= configure and run ============
-function autopxls_loader(){
+window.App.saveImage = document.createElement('script');
+window.App.saveImage.src = "https://rawgit.com/moon_darker/autopxls/master/autopxls.js";
+ 
+window.App.saveImage.onload = function () {
   var images = [
-    {
-      title: "TARDIS",
-      x: 602,
-      y: 463,
-      image: "http://i.imgur.com/wrpOqWw.png" 
-    },
-    {
-      title: "Napoleon RIP",
-      x: 440,
-      y: 574,
-      image: "http://i.imgur.com/uot63Pq.png" 
-    },
-    {
-      title: "El Gagarino",
-      x: 60,
-      y: 526,
-      image: "http://i.imgur.com/mxjxBhS.png"
-    },
-    {
-      title: "PIXELS",
-      x: 248,
-      y: 611,
-      image: "http://i.imgur.com/kjzejr4.png"
-    }
-  ]
-
-  var autopxls_script = document.createElement('script');
-  autopxls_script.src = "https://rawgit.com/dd7531/autopxls/master/autopxls.js";
-  autopxls_script.onload = function () {
-    AutoPXLS(images);
-  };
-  document.head.appendChild(autopxls_script);
-}
+      {
+        title: "Lion",
+        x: 0,
+        y: 0,
+        image: "http://i.imgur.com/GjDrHlC.jpg",
+        algo: "random",
+        mode: "v",
+        convert: 1,
+        show: 1
+      }
+    ];
+    
+  var params = {cooldown: 100, debug: 0};
+  
+  window.App.saveImage(images, params.cooldown, params.debug);
+  this.parentElement.removeChild(this);
+};
+ 
+document.head.appendChild(window.App.saveImage);
