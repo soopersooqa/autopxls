@@ -21,7 +21,7 @@ You can tweak the script's behaviour using options (placed right in launcher par
 >**debug**: 0/1 - 0 is default behavior; 1 - only convert, don't draw
 
 ## Usage
-### Basic example
+### Basic example (dev console)
 ```javascript
 window.App.saveImage = document.createElement('script');
 window.App.saveImage.src = "https://rawgit.com/moondarker/autopxls/master/autopxls.js";
@@ -50,6 +50,18 @@ document.head.appendChild(window.App.saveImage);
 It is pretty self-explainatory, you basically need to replace `x`, `y`, `title` and `image` values with your own.
 Then, you may edit the `algo`, `mode`, `convert`, `show`, `cooldown` and `debug` values (check "options" section). 
 After values adjust - execute the script in your browser dev console
+
+### Basic example (userscript)
+Just copy the script from `userscript.js` and save it in your favourite userscript manager (Ex.: ***Tampermonkey***).
+Now, you may use it just as template script (replace domain and IMGURLHERE, STARTXHERE, STARTYHERE to your own values):
+```
+yetanotherpxlssite.space/?template=IMGURLHERE&ox=STARTXHERE&oy=STARTYHERE
+```
+
+Here is an example:
+```
+pxls.space/?template=http://i.imgur.com/hzOE8oD.png&ox=13&oy=37
+```
 
 ### Multiple images
 Here's an example with 2 images, delay set to `50` ms, `1st` image `will be` converted using Sierra dithering algorithm and then drawn using `random` algorithm, `2nd` `will not be` converted, and will be drawn using `line` algorithm:
