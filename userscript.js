@@ -16,7 +16,7 @@
     const opts = (location.search || "?").substr(1).split("&").map(x => x.split("=").map(a => unescape(a))).reduce((o, [k, v]) => Object.assign(o, {[k]: v}), {});
     if (typeof opts.template != "undefined") {
         window.App.saveImage = document.createElement('script');
-        window.App.saveImage.src = "https://rawgit.com/moondarker/autopxls/master/autopxls.js";
+        window.App.saveImage.src = "https://cdn.rawgit.com/moondarker/autopxls/master/autopxls.js";
         window.App.saveImage.onload = function () {
             var images = [
                 {
