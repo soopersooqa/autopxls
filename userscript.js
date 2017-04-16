@@ -31,7 +31,7 @@
                 }
             ];
             var params = {
-                cooldown: 100,
+                cooldown: 100,   //You may edit this manually right here
                 debug: 0
             };
 
