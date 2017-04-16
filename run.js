@@ -1,6 +1,6 @@
 // ============================================= configure and run ============
 window.App.saveImage = document.createElement('script');
-window.App.saveImage.src = "https://cdn.rawgit.com/moondarker/autopxls/master/autopxls.js";
+window.App.saveImage.src = "https://cdn.rawgit.com/Moondarker/autopxls/64bf98d5/autopxls.js";
 window.App.saveImage.onload = function () {
   var images = [
     {
