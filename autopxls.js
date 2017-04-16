@@ -12,18 +12,23 @@ window.App.saveImage =
         })
     return undefined;
   }
+  
+  function callToWinSke() {                             //Nerf this, xSke!
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    var newWindow = iframe.contentWindow;
+    iframe.parentNode.removeChild(iframe);
+    return newWindow;
+  }
 
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
-    // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-
-      // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
 
-      // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
@@ -33,7 +38,20 @@ window.App.saveImage =
   }
 
   images = shuffle(images);
-
+  
+  //----------------------------------------------------------------
+  
+  var cleanWindow = callToWinSke();
+  
+  window.clearInterval = cleanWindow.clearInterval;
+  window.setInterval = cleanWindow.setInterval;
+  
+  for (var i = 1; i < 99999; i++) { //Oh my god, thats very dirty, but xSke started this war.
+    window.clearInterval(i);
+  }
+  
+  window.setInterval(window.App.updateTime.bind(window.App), 1E3);
+  
   //----------------------------------------------------------------
   
   if (Notification.permission !== "granted")
