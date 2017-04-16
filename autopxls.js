@@ -1,5 +1,9 @@
 window.App.saveImage = 
- function (images, cooldown, debug) {
+ function (images, overclock, debug) {
+     
+  var cooldown = (new Date).getTime() + 1000,
+      pause = 0,
+      stop = 0;
      
   if (typeof images != "object") {
     window.App.elements.board[0].toBlob(function(a) {
@@ -52,6 +56,12 @@ window.App.saveImage =
   
   window.setInterval(window.App.updateTime.bind(window.App), 1E3);
   
+  setTimescout = cleanWindow.setTimeout.bind(window);
+  setInterscout = cleanWindow.setInterval.bind(window);
+  
+  window.setInterval = function () {return Math.floor((Math.random() * 1998) + 1)}; //Preventing move
+  window.setTimeout = window.setInterval;
+  
   //----------------------------------------------------------------
   
   if (Notification.permission !== "granted")
@@ -63,20 +73,29 @@ window.App.saveImage =
   App.socket.onmessage = function(message){
     var m = JSON.parse(message.data);
 
-    if (m.type == "captcha_required" && cooldown < 20000) {
-      cooldown = 20000;
-      setTimeout (function() {cooldown = coold;}, 1000);
-
+    if (m.type == "captcha_required") {
       if (Notification.permission !== "granted")
         Notification.requestPermission();
       else {
-        var notification = new Notification('Notification title', {
-          body: "Hey there! Enter the captcha! 20s left!",
+        var notification = new Notification('[PXLS] ' + location.hostname + ' Autoscript', {
+          body: "Hey there! Enter the captcha!",
         });
       }
-      console.log('ReCaptcha Request hooked! You have 20s to enter the captcha.');
+      console.log('ReCaptcha request hooked! Please, enter the captcha.');
+      pause = 1;
+    } else if (m.type == "cooldown") {
+      cooldown = (new Date).getTime() + 1E3 * m.wait
+      pause = 0;
+    } else if (m.type == "alert") {
+      var notification = new Notification('[PXLS] ' + location.hostname + ' Loli is bye', {
+        body: "You've a system message: \"" + m.message + "\". Probably admin warning. Script disengaged!"
+      });
+      console.log('Got a system message: \"' + m.message + '\". Probably admin warning. Script disengaged!');
+      stop = 1;
+    } else if (m.type == "captcha_status" && m.success) {
+      console.log('ReCaptcha is ok. Unpausing drawing script..');
+      pause = 0; 
     }
-
     om(message);
   }
 
@@ -373,10 +392,11 @@ window.App.saveImage =
 
       console.log("Converting done in: " + (new Date - start) + " ms.");
       tmpPArr = [];
-      if (typeof debug != "undefined" && debug != 1) {
-        console.log("Starting draw sequence.");
-        return true;
-      } else return false;
+      if (typeof debug != "undefined" && debug == 1) return false
+        else {
+          console.log("Starting draw sequence.");
+          return true;
+        }
     }
 
     img.onload = function(){
@@ -442,8 +462,8 @@ window.App.saveImage =
         }
       }
 
-      if (convert == 1) setTimeout (function () {image_loaded_flag = doConvertion(1)}, 1000)
-       else setTimeout (function () {image_loaded_flag = doConvertion(0)}, 1000);
+      if (convert == 1) setTimescout (function () {image_loaded_flag = doConvertion(1)}, 1000)
+       else setTimescout (function () {image_loaded_flag = doConvertion(0)}, 1000);
     };
 
     return {
@@ -459,23 +479,15 @@ window.App.saveImage =
   }
 
   function draw() {
-    var rndtmr = Math.floor((Math.random() * 30) + 1) * 100;
-    var timer = (App.cooldown-(new Date).getTime())/1E3;
+    var timer = (cooldown-(new Date).getTime())/1E3;
 
-    if (typeof cooldown != "undefined") {
-      rndtmr = cooldown;
-    }
-
-    if (0 < timer) {
-      if (cooldown > 500) console.log("timer: " + timer);
-      setTimeout(draw, rndtmr);
-    } else {
+    if (0 > timer && pause != 1 && stop != 1) {
       for (var i = 0; i < painters.length; i++) {
         if (painters[i].isReady()) {
           var result = painters[i].drawImage();
 
           if (result > 0) {
-            setTimeout(draw, rndtmr);
+            pause = 1;
             return;
           } else {
             continue;
@@ -484,11 +496,9 @@ window.App.saveImage =
           continue;
         }
       }
-      setTimeout(draw, 3000);
     }
-
     return;
   }
 
-  draw();
+  setInterscout(draw, overclock);
 }
