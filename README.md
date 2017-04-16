@@ -24,7 +24,7 @@ You can tweak the script's behaviour using options (placed right in launcher par
 ### Basic example (dev console)
 ```javascript
 window.App.saveImage = document.createElement('script');
-window.App.saveImage.src = "https://cdn.rawgit.com/moondarker/autopxls/master/autopxls.js";
+window.App.saveImage.src = "https://rawgit.com/Moondarker/autopxls/master/autopxls.js";
 window.App.saveImage.onload = function () {
   var images = [
     {
@@ -67,7 +67,7 @@ pxls.space/?template=http://i.imgur.com/hzOE8oD.png&ox=13&oy=37
 Here's an example with 2 images, delay set to `50` ms, `1st` image `will be` converted using Sierra dithering algorithm and then drawn using `random` algorithm, `2nd` `will not be` converted, and will be drawn using `line` algorithm:
 ```javascript
 window.App.saveImage = document.createElement('script');
-window.App.saveImage.src = "https://cdn.rawgit.com/moondarker/autopxls/master/autopxls.js";
+window.App.saveImage.src = "https://rawgit.com/Moondarker/autopxls/master/autopxls.js";
 window.App.saveImage.onload = function () {
   var images = [
     {
