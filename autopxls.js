@@ -83,7 +83,7 @@ window.App.saveImage =
   //----------------------------------------------------------------
 
   var Painter = function(config){
-    var board = document.getElementById("board").getContext('2d');
+    var board = (document.getElementById("board") ? document.getElementById("board").getContext('2d') : App.elements.board[0].getContext('2d'));
     var title = config.title || "unnamed";
 
     var img = new Image();
