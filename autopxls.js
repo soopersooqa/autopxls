@@ -3,7 +3,8 @@ window.App.saveImage =
      
   var cooldown = (new Date).getTime() + 1000,
       pause = 0,
-      stop = 0;
+      stop = 0,
+      pendingPixel = {x: 0, y: 0};
      
   if (typeof images != "object") {
     window.App.elements.board[0].toBlob(function(a) {
@@ -25,7 +26,17 @@ window.App.saveImage =
     iframe.parentNode.removeChild(iframe);
     return newWindow;
   }
-
+  
+  function doPlace(a, b, c) {                           //Mister p0358 was right. Damn arms race.
+    pendingPixel.x = a; pendingPixel.y = b;
+    window.App.socket.send(JSON.stringify({
+      type: "placepixel",
+      x: a,
+      y: b,
+      color: c
+    }));
+  }
+  
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -82,8 +93,8 @@ window.App.saveImage =
         });
       }
       console.log('ReCaptcha request hooked! Please, enter the captcha.');
-      pause = 1;
-    } else if (m.type == "cooldown") {
+      stop = 1;
+    } else if (m.type == "cooldown" && stop != 1) {
       cooldown = (new Date).getTime() + 1E3 * m.wait
       pause = 0;
     } else if (m.type == "alert") {
@@ -94,7 +105,9 @@ window.App.saveImage =
       stop = 1;
     } else if (m.type == "captcha_status" && m.success) {
       console.log('ReCaptcha is ok. Unpausing drawing script..');
-      pause = 0; 
+      window.App.pendingPixel = pendingPixel;
+      stop = 0;
+      pause = 0;
     }
     om(message);
   }
@@ -209,8 +222,8 @@ window.App.saveImage =
         
         console.log("Drawing " + title + " coords" + " x:" + (parseInt(x) + parseInt(coords["x"])) + " y:" + (parseInt(y) + parseInt(coords["y"])) + ", \"" + algo + "\" algorithm.");
 
-        App.switchColor(color_id);
-        App.attemptPlace ( (parseInt(x) + parseInt(coords["x"])), (parseInt(y) + parseInt(coords["y"])) );
+        window.App.color = color_id;
+        doPlace((parseInt(x) + parseInt(coords["x"])), (parseInt(y) + parseInt(coords["y"])), color_id);
         return 20;
       }
 
@@ -479,9 +492,11 @@ window.App.saveImage =
   }
 
   function draw() {
-    var timer = (cooldown-(new Date).getTime())/1E3;
-
-    if (0 > timer && pause != 1 && stop != 1) {
+    var rnd = Math.floor((Math.random() * 15) + 1),
+        timer = (cooldown-(new Date).getTime())/1E3,
+        trigger = (location.hostname == "pxls.space" ? timer + rnd : timer);
+    
+    if (0 > trigger && pause != 1 && stop != 1) {
       for (var i = 0; i < painters.length; i++) {
         if (painters[i].isReady()) {
           var result = painters[i].drawImage();
