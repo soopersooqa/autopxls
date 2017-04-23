@@ -494,7 +494,7 @@ window.App.saveImage =
   function draw() {
     var rnd = Math.floor((Math.random() * 15) + 1),
         timer = (cooldown-(new Date).getTime())/1E3,
-        trigger = (location.hostname == "pxls.space" ? timer + rnd : timer);
+        trigger = (location.hostname == "wepixels.pw" ? timer + rnd : timer);
     
     if (0 > trigger && pause != 1 && stop != 1) {
       for (var i = 0; i < painters.length; i++) {
